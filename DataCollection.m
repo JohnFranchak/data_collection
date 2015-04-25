@@ -10,7 +10,7 @@ if nargin < 1
     id = 'test';
     condition = 'test';
     out_dir = pwd;
-    mode = 0; %search mode (0 = binary, 1 = coarse, 2 = fine, 3 = randomized)
+    mode = 0; %search mode (0 = binary, 1 = coarse, 2 = fine, 3 = randomized, 4 = staircase)
     num_trials = 1000;
     mu_est = 30;
 end
@@ -271,6 +271,7 @@ function [mu_est, sigma_est] = setGraphview(w, trial_resp, trial_unit, trial_num
     plot(1:length(trial_unit), trial_unit, '--ko');
     xlabel('Trial Number');
     ylabel('Trial Unit');
+    grid minor;
     hold on
     for i = 1:length(trial_resp)
         if trial_resp(i) == 0
