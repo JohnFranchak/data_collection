@@ -91,6 +91,11 @@ while(~exit)
         elseif strcmp(reply, 's')
             trial_resp(trial_num) = rand(1,1) >= 1 - normcdf(trial_unit(trial_num),mu_actual, sig_actual);
             break;
+        elseif strcmp(reply,'undo')
+            trial_num = trial_num - 1;
+            setUnitView(trial_unit(trial_num),trial_num);
+            trial_unit = trial_unit(1:trial_num);
+            trial_resp = trial_resp(1:trial_num);
         elseif ~isempty(str2double(reply))
             val = str2double(reply);
             level = find(stim_levels == val);
@@ -267,7 +272,7 @@ function [mu_est, sigma_est] = setGraphview(w, trial_resp, trial_unit, trial_num
     xlabel('Trial Number');
     ylabel('Trial Unit');
     hold on
-    for i = 1:length(trial_unit)
+    for i = 1:length(trial_resp)
         if trial_resp(i) == 0
             plot(i, trial_unit(i), 'ko', 'MarkerFaceColor','r')
         end
@@ -277,6 +282,6 @@ function [mu_est, sigma_est] = setGraphview(w, trial_resp, trial_unit, trial_num
     else
         axis([length(trial_unit)-20 length(trial_unit) mu_est-8 mu_est+8]);
     end
-
+    hold off
     
 end

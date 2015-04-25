@@ -1,4 +1,5 @@
 clear all
+tic
 out_dir = uigetdir('','Specify a directory to save output files');
 id = inputdlg('Enter participant id')';
 
@@ -15,8 +16,9 @@ save(strcat(out_dir,'/',id{1}));
 [mu_est_npk, sigma_est_npk, trial_unit_npk, trial_resp_npk, time_npk] = DataCollection(out_dir, id{1}, 'npk', stim_levels_dec, 4, mu_est_aff - 5, 15);
 save(strcat(out_dir,'/',id{1}));
 
-measurement_offset = inputdlg('Type measurement camera reading with doorway fully closed')';
+measurement_offset = inputdlg('Enter measurement camera reading with doorway fully closed')';
 
 save(strcat(out_dir,'/',id{1}));
 
 disp('Experiment successfully completed. Please check that all of the files have been saved to the participant directory, and then close Matlab.');
+toc
