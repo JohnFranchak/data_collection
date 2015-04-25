@@ -1,4 +1,4 @@
-function [mu_est, sigma_est, trial_unit, trial_resp, elapsed_time] = DataCollection(out_dir, id, condition, stim_levels, num_trials)
+function [mu_est, sigma_est, trial_unit, trial_resp, elapsed_time] = DataCollection(out_dir, id, condition, stim_levels, mode, mu_est, num_trials)
 tic
 addpath('Palamedes/')
 
@@ -6,13 +6,13 @@ addpath('Palamedes/')
 mu_actual = 50;
 sig_actual = 2;
 
-if nargin < 4
-    stim_levels = 15:.5:60; %possible stimulus levels
-end
 if nargin < 1
     id = 'test';
     condition = 'test';
     out_dir = pwd;
+    mode = 0; %search mode (0 = binary, 1 = coarse, 2 = fine, 3 = randomized)
+    num_trials = 1000;
+    mu_est = 30;
 end
 
 trial_unit = []; %array to keep track of presented trials
@@ -20,7 +20,7 @@ trial_resp = []; %array to keep track of trial responses (0 no/fail, 1 yes/succe
 trial_num = 1;
 
 %Set initial loop conditions
-mode = 0; %search mode (0 = binary, 1 = coarse, 2 = fine, 3 = randomized)
+
 exit = false;
 
 close all;
@@ -30,7 +30,7 @@ set(h,'Position',[0,0,450,800]);
 
 outfile = strcat(out_dir,'/',id, '_', condition,'.csv');
 graphfile = strcat(out_dir,'/',id, '_', condition,'.eps');
-mu_est = 30;
+
 
 %Loop through trials until user chooses to exit
 while(~exit)
