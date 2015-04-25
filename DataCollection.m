@@ -3,8 +3,8 @@ tic
 addpath('Palamedes/')
 
 %Parameters for simulating
-mu_actual = 50;
-sig_actual = 2;
+mu_actual = 24;
+sig_actual = .5;
 
 if nargin < 1
     id = 'test';
@@ -56,6 +56,19 @@ while(~exit)
             rand_unit = mu_est + randn(1,1).* 1.5;
         end
         trial_unit(trial_num) = findNearestUnit(stim_levels, rand_unit);
+    elseif mode == 4 %staircase
+        %Start at guessed location, then staircase
+        if trial_num == 1
+            trial_unit(trial_num) = findNearestUnit(stim_levels, mu_est);
+        else
+            step_size = stim_levels(2) - stim_levels(1);
+            if trial_resp(trial_num - 1) == 1
+                trial_unit(trial_num) = findNearestUnit(stim_levels, trial_unit(trial_num-1) - step_size*3);                
+            elseif trial_resp(trial_num - 1) == 0
+                trial_unit(trial_num) = findNearestUnit(stim_levels, trial_unit(trial_num-1) + step_size*2);
+            end
+        end
+            
     end
     
     setUnitView(trial_unit(trial_num),trial_num);
@@ -106,7 +119,6 @@ while(~exit)
             paramsValues = fitPsych(trial_unit, trial_resp, initial_guess);
             mu_est = findNearestUnit(stim_levels, paramsValues(1));
          
-            
             %Create a random block of trials around threshold
             coarse_block = zeros(1,14) + mu_est;
             coarse_block = coarse_block + [0 0 -3 -3 3 3 -4 -4 4 4 -5 -5 5 5];
@@ -129,14 +141,15 @@ while(~exit)
         block_i = block_i + 1;
         if block_i > numel(fine_block) 
             mode = 3;
-            paramsValues = fitPsych(trial_unit, trial_resp, mu_est);
-            mu_est = paramsValues(1);
-            sigma_est = 1./paramsValues(2);
+        end
+    elseif mode == 4
+        if trial_num == 14
+            mode = 3;
         end
     end
     
     %Update graphview & parameter estimates
-    [mu_est sigma_est] = setGraphview(10,trial_resp, trial_unit, trial_num, mu_est,'ro','b',id, condition);
+    [mu_est, sigma_est] = setGraphview(10,trial_resp, trial_unit, trial_num, mu_est,'ro','b',id, condition);
         
     trial_num = trial_num + 1;
     csvwrite(outfile, [trial_unit' trial_resp']);
@@ -214,7 +227,7 @@ function setUnitView(unit, trial_num)
     set(a, 'YColor', [1 1 1]);
 end
 
-function [mu_est sigma_est] = setGraphview(w, trial_resp, trial_unit, trial_num, initial_guess, symbol,color,id, condition)
+function [mu_est, sigma_est] = setGraphview(w, trial_resp, trial_unit, trial_num, initial_guess, symbol,color,id, condition)
     [STIM, HIT, N] = PAL_PFML_GroupTrialsbyX(trial_unit, trial_resp, ones(size(trial_resp)));
     [paramsValues] = PAL_PFML_Fit(STIM, HIT, N, [initial_guess 2 0 0], [1 1 0 0 ], @PAL_CumulativeNormal);
     mu_est = paramsValues(1);
