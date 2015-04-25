@@ -1,5 +1,5 @@
-function [mu_est, sigma_est, trial_unit, trial_resp] = DataCollection(out_dir, id, condition, stim_levels)
-
+function [mu_est, sigma_est, trial_unit, trial_resp, elapsed_time] = DataCollection(out_dir, id, condition, stim_levels, num_trials)
+tic
 addpath('Palamedes/')
 
 %Parameters for simulating
@@ -50,7 +50,7 @@ while(~exit)
     elseif mode == 2
         trial_unit(trial_num) = fine_block(block_i); %Choose predefined trials from fine block
     elseif mode == 3 %Randomize units based on sigma
-        if sigma_est >= 1.5 %#ok<BDSCI>
+        if sigma_est >= 1.5 
             rand_unit = mu_est + randn(1,1).* sigma_est;
         else
             rand_unit = mu_est + randn(1,1).* 1.5;
@@ -62,6 +62,9 @@ while(~exit)
     
     %Ask for user input (trial result, exit)
     while(1)
+        if trial_num == num_trials + 1
+            disp('Completed specified number of trials. Type exit and hit enter to end block.');
+        end
         reply = input(sprintf('Trial #%d at %2.1f>> ',trial_num,trial_unit(trial_num)),'s');
         if strcmp(reply, 'exit')
             exit = true;
@@ -180,6 +183,8 @@ if strcmp(reply, 'y')
     saveas(1, graphfile, 'epsc');
 end
 
+elapsed_time = toc;
+
 end
 
 %%%SUPPORT FUNCTIONS
@@ -260,4 +265,5 @@ function [mu_est sigma_est] = setGraphview(w, trial_resp, trial_unit, trial_num,
         axis([length(trial_unit)-20 length(trial_unit) mu_est-8 mu_est+8]);
     end
 
+    
 end
