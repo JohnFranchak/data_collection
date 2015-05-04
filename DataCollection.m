@@ -63,9 +63,21 @@ while(~exit)
         else
             step_size = stim_levels(2) - stim_levels(1);
             if trial_resp(trial_num - 1) == 1
+<<<<<<< Updated upstream
                 trial_unit(trial_num) = findNearestUnit(stim_levels, trial_unit(trial_num-1) - step_size*3);                
             elseif trial_resp(trial_num - 1) == 0
                 trial_unit(trial_num) = findNearestUnit(stim_levels, trial_unit(trial_num-1) + step_size*2);
+=======
+<<<<<<< HEAD
+                trial_unit(trial_num) = findNearestUnit(stim_levels, trial_unit(trial_num-1) - step_size*4);                
+            elseif trial_resp(trial_num - 1) == 0
+                trial_unit(trial_num) = findNearestUnit(stim_levels, trial_unit(trial_num-1) + step_size*3);
+=======
+                trial_unit(trial_num) = findNearestUnit(stim_levels, trial_unit(trial_num-1) - step_size*3);                
+            elseif trial_resp(trial_num - 1) == 0
+                trial_unit(trial_num) = findNearestUnit(stim_levels, trial_unit(trial_num-1) + step_size*2);
+>>>>>>> origin/master
+>>>>>>> Stashed changes
             end
         end
             
